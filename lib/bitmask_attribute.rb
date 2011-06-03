@@ -101,8 +101,15 @@ module BitmaskAttribute
     end
     
     def create_named_scopes_on(model)
+      scope_method = model.class_eval %(
+        if respond_to?(:scope) && !protected_methods.include?('scope')
+          :scope # ActiveRecord 3.x
+        else
+          :named_scope # ActiveRecord 2.x
+        end
+      )
       model.class_eval %(
-        named_scope :with_#{attribute},
+        #{scope_method} :with_#{attribute},
           proc { |*values|
             if values.blank?
               {:conditions => '#{attribute} > 0 OR #{attribute} IS NOT NULL'}
@@ -114,12 +121,12 @@ module BitmaskAttribute
               {:conditions => sets.join(' AND ')}
             end
           }
-        named_scope :without_#{attribute}, :conditions => "#{attribute} == 0 OR #{attribute} IS NULL"
-        named_scope :no_#{attribute},      :conditions => "#{attribute} == 0 OR #{attribute} IS NULL"
+        #{scope_method} :without_#{attribute}, :conditions => "#{attribute} == 0 OR #{attribute} IS NULL"
+        #{scope_method} :no_#{attribute},      :conditions => "#{attribute} == 0 OR #{attribute} IS NULL"
       )
       values.each do |value|
         model.class_eval %(
-          named_scope :#{attribute}_for_#{value},
+          #{scope_method} :#{attribute}_for_#{value},
                       :conditions => ['#{attribute} & ? <> 0', #{model}.bitmask_for_#{attribute}(:#{value})]
         )
       end      
