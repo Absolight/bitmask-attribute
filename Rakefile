@@ -4,13 +4,14 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "gabrielhase-bitmask-attribute"
-    gem.summary = %Q{Simple bitmask attribute support for ActiveRecord. Forked from bruce/bitmask_attribute for Rails 2.3.11 support.}
-    gem.email = "gabriel.hase@gmail.com"
-    gem.homepage = "http://github.com/gabrielhase/bitmask-attribute"
-    gem.authors = ["Bruce Williams, Gabriel Hase"]
-    gem.add_dependency 'activerecord', '>=2.3.7'
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+    gem.name = "bitmask-attribute"
+    gem.summary = %Q{Simple bitmask attribute support for any class}
+    gem.email = "pavel.chipiga@gmail.com"
+    gem.homepage = "http://github.com/fullsailor/bitmask-attribute"
+    gem.authors = ["Pavel Chipiga", "Bruce Williams"]
+    gem.add_development_dependency 'activerecord'
+    gem.add_development_dependency 'sqlite3-ruby'
+    gem.add_development_dependency "shoulda"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError

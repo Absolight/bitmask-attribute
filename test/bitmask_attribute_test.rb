@@ -97,6 +97,13 @@ class BitmaskAttributeTest < Test::Unit::TestCase
       assert_stored campaign, :web, :print
     end
     
+    should "convert values passed as strings to symbols" do
+      campaign = Campaign.new
+      campaign.medium << "web"
+      assert_equal [:web], campaign.medium
+      assert_equal true, campaign.medium?("web")
+    end
+        
     context "checking" do
 
       setup { @campaign = Campaign.new(:medium => [:web, :print]) }
@@ -132,9 +139,9 @@ class BitmaskAttributeTest < Test::Unit::TestCase
 
       setup do
         @company = Company.create(:name => "Test Co, Intl.")
-        @campaign1 = @company.campaigns.create :medium => [:web, :print]        
+        @campaign1 = @company.campaigns.create :medium => [:web, :print]
         @campaign2 = @company.campaigns.create
-        @campaign3 = @company.campaigns.create :medium => [:web, :email] 
+        @campaign3 = @company.campaigns.create :medium => [:web, :email]
       end
 
       should "support retrieval by any value" do
@@ -148,6 +155,10 @@ class BitmaskAttributeTest < Test::Unit::TestCase
       should "support retrieval by all matching values" do
         assert_equal [@campaign1], @company.campaigns.with_medium(:web, :print)
         assert_equal [@campaign3], @company.campaigns.with_medium(:web, :email)
+      end
+
+      should "support retrieval by any matching values" do
+        assert_equal [@campaign1, @campaign3], @company.campaigns.with_medium_in(:email, :print)
       end
 
       should "support retrieval for no values" do
@@ -175,7 +186,7 @@ class BitmaskAttributeTest < Test::Unit::TestCase
         Campaign.medium_for_print
       )
       
-      assert_equal Campaign.medium_for_print, Campaign.medium_for_print.medium_for_web
+      assert_equal Campaign.medium_for_print.all, Campaign.medium_for_print.medium_for_web.all
       
       assert_equal [], Campaign.medium_for_email
       assert_equal [], Campaign.medium_for_web.medium_for_email

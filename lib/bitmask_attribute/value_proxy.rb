@@ -17,7 +17,7 @@ module BitmaskAttribute
     %w(push << delete replace reject! select!).each do |override|
       class_eval(<<-EOEVAL)
         def #{override}(*args)
-          (super).tap do
+          super.tap do
             updated!
           end
         end
@@ -42,7 +42,12 @@ module BitmaskAttribute
       end
     end
     
+    def symbolize!
+      map!(&:to_sym)
+    end
+    
     def updated!
+      symbolize!
       validate!
       uniq!
       serialize!

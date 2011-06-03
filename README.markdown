@@ -17,7 +17,14 @@ values.
     class User < ActiveRecord::Base
       bitmask :roles, :as => [:writer, :publisher, :editor, :proofreader] 
     end
-    
+
+Or with a clean class:
+
+    class User
+      include BitmaskAttribute
+      bitmask :roles, :as => [:writer, :publisher, :editor, :proofreader] 
+    end
+
 You can then modify the column using the declared values without resorting
 to manual bitmasks.
     
@@ -49,7 +56,7 @@ Named Scopes
 ------------
 
 A couple useful named scopes are also generated when you use
-`bitmask`:
+`bitmask` with ActiveRecord:
 
     User.with_roles
     # => (all users with roles)
@@ -111,8 +118,9 @@ Thanks to the following contributors:
 
 * [Jason L Perry](http://github.com/ambethia)
 * [Nicolas Fouché](http://github.com/nfo)
+* [Pavel Chipiga](http://github.com/chipiga)
 
 Copyright
 ---------
 
-Copyright (c) 2007-2009 Bruce Williams. See LICENSE for details.
+Copyright (c) 2007-2010 Bruce Williams. See LICENSE for details.
